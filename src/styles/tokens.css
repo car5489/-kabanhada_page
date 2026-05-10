@@ -1,0 +1,15 @@
+:root {
+  --color-bg: #f7fbff;
+  --color-surface: #ffffff;
+  --color-surface-soft: #eef6ff;
+  --color-primary: #1d6fd8;
+  --color-primary-soft: #dcecff;
+  --color-primary-deep: #0f3f86;
+  --color-text: #132033;
+  --color-text-muted: #61728a;
+  --color-border: #d7e5f5;
+  --shadow-card: 0 14px 32px rgba(29, 111, 216, 0.12);
+  --radius-card: 20px;
+  --radius-button: 999px;
+  --content-width: 1120px;
+}

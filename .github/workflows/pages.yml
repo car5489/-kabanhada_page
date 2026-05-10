@@ -1,0 +1,93 @@
+name: Build and deploy kabanhada catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show repository files
+        run: |
+          pwd
+          ls -la
+          echo "---- package.json ----"
+          cat package.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Clean stale install state
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Google Sheets dependency
+        run: npm run setup:sheet-deps
+
+      - name: Verify installed binaries
+        run: |
+          echo "---- node/npm ----"
+          node -v
+          npm -v
+          echo "---- node_modules/.bin ----"
+          ls -la node_modules/.bin
+          echo "---- vite location ----"
+          test -f node_modules/.bin/vite
+          echo "vite exists"
+
+      - name: Verify Google Sheet secrets
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+        run: |
+          test -n "$GOOGLE_SHEET_ID" || (echo "GOOGLE_SHEET_ID is missing" && exit 1)
+          test -n "$GOOGLE_SERVICE_ACCOUNT_EMAIL" || (echo "GOOGLE_SERVICE_ACCOUNT_EMAIL is missing" && exit 1)
+          test -n "$GOOGLE_PRIVATE_KEY" || (echo "GOOGLE_PRIVATE_KEY is missing" && exit 1)
+          echo "Google Sheet secrets exist"
+
+      - name: Build with Google Sheet
+        run: npm run build:sheet
+        env:
+          REQUIRE_GOOGLE_SHEET: '1'
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          BASE_PATH: ${{ vars.BASE_PATH || '/-kabanhada_page/' }}
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy Pages
+        uses: actions/deploy-pages@v4

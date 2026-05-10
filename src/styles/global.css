@@ -1,0 +1,423 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Pretendard", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-weight: 400;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px clamp(18px, 4vw, 48px);
+  border-bottom: 1px solid rgba(215, 229, 245, 0.8);
+  background: rgba(247, 251, 255, 0.86);
+  backdrop-filter: blur(16px);
+}
+
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-header__mark {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 12px;
+  color: white;
+  background: var(--color-primary);
+}
+
+.site-header__nav,
+.site-footer nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.site-header__link,
+.site-footer a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.site-header__link.router-link-active,
+.site-header__link:hover,
+.site-footer a:hover {
+  color: var(--color-primary-deep);
+}
+
+.site-footer {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 32px clamp(18px, 4vw, 48px);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.home-page,
+.catalog-page,
+.empty-page {
+  width: min(var(--content-width), calc(100% - 36px));
+  margin: 0 auto;
+  padding: 56px 0 88px;
+}
+
+.home-hero,
+.catalog-page__hero,
+.empty-page {
+  display: grid;
+  gap: 16px;
+}
+
+.home-hero,
+.catalog-page__hero {
+  max-width: 760px;
+  margin-bottom: 36px;
+}
+
+.catalog-page--front {
+  padding-top: 42px;
+}
+
+.catalog-page__hero--front {
+  max-width: 880px;
+  margin-bottom: 28px;
+}
+
+.catalog-page__hero--front h1 {
+  font-size: clamp(2rem, 4.8vw, 4.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
+
+.catalog-page__hero--front p:last-child {
+  max-width: 760px;
+  font-size: clamp(1rem, 1.4vw, 1.12rem);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(2.2rem, 6vw, 4.8rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+p {
+  font-weight: 400;
+  line-height: 1.72;
+  color: var(--color-text-muted);
+}
+
+.eyebrow {
+  margin-bottom: 0;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.button-link {
+  display: inline-flex;
+  width: max-content;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: var(--radius-button);
+  color: white;
+  background: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (max-width: 680px) {
+  .site-header,
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.site-header__mark--logo {
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid rgba(29, 111, 216, 0.18);
+  box-shadow: 0 8px 20px rgba(29, 111, 216, 0.12);
+}
+
+.site-header__mark--logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.home-page--kabanhada {
+  display: grid;
+  gap: 52px;
+}
+
+.home-hero--brand {
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  align-items: center;
+  max-width: var(--content-width);
+  min-height: 560px;
+  margin-bottom: 0;
+}
+
+.home-hero__logo-wrap {
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 30px);
+  border: 1px solid var(--color-border);
+  border-radius: 32px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(220, 236, 255, 0.58));
+  box-shadow: var(--shadow-card);
+}
+
+.home-hero__logo {
+  width: min(220px, 58vw);
+  aspect-ratio: 1 / 1;
+  display: block;
+  object-fit: contain;
+}
+
+.home-hero__copy {
+  display: grid;
+  gap: 18px;
+}
+
+.home-page--kabanhada .home-hero__copy h1 {
+  font-size: clamp(1.87rem, 5.1vw, 4.08rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
+
+.home-hero__description {
+  max-width: 720px;
+  font-size: clamp(1rem, 1.8vw, 1.18rem);
+}
+
+.home-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.button-link--ghost {
+  color: var(--color-primary-deep);
+  background: var(--color-primary-soft);
+}
+
+.home-promises {
+  display: grid;
+  gap: 22px;
+}
+
+.home-section-heading {
+  display: grid;
+  gap: 8px;
+}
+
+.home-promise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-promise-card {
+  min-height: 180px;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.home-promise-card h3 {
+  margin: 0 0 10px;
+  color: var(--color-primary-deep);
+  font-size: 1.24rem;
+  font-weight: 600;
+}
+
+.home-promise-card p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 860px) {
+  .home-hero--brand {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .home-hero__logo-wrap {
+    width: min(300px, 100%);
+  }
+
+  .home-promise-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Accessibility-forward typography pass for KABANHADA catalog.
+   The visual tone stays clean and modern, but key text now has stronger scale,
+   contrast, and hit-area clarity for older visitors. */
+:root {
+  --color-text-muted: #46566e;
+}
+
+body {
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.catalog-page--front {
+  padding-top: clamp(26px, 4vw, 46px);
+}
+
+.catalog-page__hero--front {
+  max-width: 940px;
+  margin-bottom: 30px;
+}
+
+.catalog-page__hero--front h1 {
+  font-size: clamp(2.35rem, 4.6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+}
+
+.catalog-page__hero--front p:last-child {
+  max-width: 780px;
+  color: #33465f;
+  font-size: clamp(1.08rem, 1.45vw, 1.22rem);
+  font-weight: 400;
+  line-height: 1.72;
+}
+
+.eyebrow,
+h2,
+h3,
+.button-link,
+.site-header__brand,
+.site-header__link,
+.site-footer a {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+
+/* Mobile navigation tightening for catalog-first users. */
+@media (max-width: 760px) {
+  .site-header {
+    position: sticky;
+    align-items: center;
+    flex-direction: row;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .site-header__brand {
+    min-width: 0;
+    gap: 9px;
+    font-size: 0.98rem;
+  }
+
+  .site-header__mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+  }
+
+  .site-header__nav {
+    display: none;
+  }
+
+  .site-footer {
+    padding: 24px 14px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Accessibility helper for invisible but screen-reader-readable labels. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
