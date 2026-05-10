@@ -77,7 +77,7 @@ jobs:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
-          BASE_PATH: ${{ vars.BASE_PATH || '/-kabanhada_page/' }}
+          BASE_PATH: '/'
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

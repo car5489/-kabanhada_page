@@ -21,7 +21,9 @@
     "git:update": "node scripts/git-update.mjs",
     "git:publish": "node scripts/git-update.mjs",
     "setup:sheet-deps": "npm install googleapis@^144.0.0 --no-save --no-audit --fund=false --package-lock=false",
-    "optimize:images": "node scripts/optimize-vehicle-images.mjs"
+    "optimize:images": "node scripts/optimize-vehicle-images.mjs",
+    "scaffold:vehicle": "node scripts/scaffold-vehicle-assets.mjs",
+    "scaffold:vehicles": "node scripts/scaffold-vehicle-assets.mjs --catalog public/data/vehicle-catalog.json"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.4",

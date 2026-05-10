@@ -46,7 +46,7 @@ GOOGLE_PRIVATE_KEY
 Variables:
 
 ```txt
-BASE_PATH=/-kabanhada_page/
+BASE_PATH=/
 ```
 
 
@@ -61,16 +61,20 @@ https://github.com/car5489/-kabanhada_page.git
 커스텀 도메인 연결 전 기본 Pages 주소는 아래입니다.
 
 ```txt
-https://car5489.github.io/-kabanhada_page/
+https://car5489.co.kr/
 ```
 
-따라서 `BASE_PATH`는 아래처럼 설정합니다.
+커스텀 도메인 `car5489.co.kr`을 사용하므로 `BASE_PATH`는 루트(`/`)로 설정합니다.
 
 ```txt
-/-kabanhada_page/
+/
 ```
 
-실제 도메인을 구매해 연결하는 경우에는 `BASE_PATH=/`로 변경하고, `public/CNAME` 파일에 도메인을 넣습니다.
+`public/CNAME` 파일에는 아래 값이 들어갑니다.
+
+```txt
+car5489.co.kr
+```
 
 ## 4. 이미지 규칙
 

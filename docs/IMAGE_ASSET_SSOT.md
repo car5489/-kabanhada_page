@@ -133,3 +133,68 @@ WebP 경로는 빌드 스크립트가 자동으로 처리합니다.
 ```txt
 카반하다 차량 이미지는 public/vehicles/차량ID 폴더를 원본으로 삼고, 원본 권장 사이즈는 1600x1067px 3:2 비율이며, 빌드 단계에서 WebP로 최적화해 배포한다.
 ```
+
+---
+
+## 8. 차량 이미지 폴더 스캐폴드 생성
+
+Google Sheet에 차량 정보를 입력해도 GitHub 저장소의 이미지 폴더가 자동으로 커밋되지는 않습니다.  
+GitHub Actions는 빌드 서버에서 실행되므로, 새 폴더를 저장소에 영구 반영하려면 로컬에서 스캐폴드 명령을 실행한 뒤 Git에 올려야 합니다.
+
+### 차량 1대 폴더 생성
+
+```powershell
+npm run scaffold:vehicle -- --id avante-cn7-2022 --title "2022 현대 아반떼 CN7"
+```
+
+생성 위치:
+
+```txt
+public/vehicles/avante-cn7-2022/
+```
+
+생성되는 안내 파일:
+
+```txt
+README.md
+.gitkeep
+main.jpg.placeholder.txt
+01.jpg.placeholder.txt
+02.jpg.placeholder.txt
+03.jpg.placeholder.txt
+```
+
+실제 이미지는 아래 이름으로 넣습니다.
+
+```txt
+main.jpg
+01.jpg
+02.jpg
+03.jpg
+```
+
+### 현재 JSON에 있는 차량 전체 폴더 확인/생성
+
+```powershell
+npm run scaffold:vehicles
+```
+
+이 명령은 `public/data/vehicle-catalog.json`에 들어 있는 차량ID를 읽어서 `public/vehicles/차량ID/` 폴더를 만듭니다.
+
+### 시트 수정 후 권장 작업 흐름
+
+```txt
+1. Google Sheet vehicles 탭에 새 차량 행 추가
+2. PowerShell에서 npm run scaffold:vehicle -- --id 차량ID --title "차량명" 실행
+3. public/vehicles/차량ID/ 폴더에 main.jpg, 01.jpg, 02.jpg, 03.jpg 넣기
+4. Git에 커밋/푸시
+5. GitHub Actions 실행 또는 push 트리거로 배포
+```
+
+SSOT 기준:
+
+```txt
+Google Sheet는 차량 텍스트 정보 원본이고,
+GitHub public/vehicles 폴더는 이미지 파일 원본이다.
+시트 입력만으로 이미지 폴더가 자동 생성/커밋되지는 않는다.
+```

@@ -52,16 +52,20 @@ https://github.com/car5489/-kabanhada_page.git
 커스텀 도메인을 아직 연결하지 않는 경우 기본 Pages 주소는 아래 형식입니다.
 
 ```txt
-https://car5489.github.io/-kabanhada_page/
+https://car5489.co.kr/
 ```
 
-따라서 GitHub Actions Variables의 `BASE_PATH`는 아래 값으로 둡니다.
+커스텀 도메인을 사용하므로 Vite 기준 경로는 루트(`/`)로 고정합니다.
 
 ```txt
-BASE_PATH=/-kabanhada_page/
+BASE_PATH=/
 ```
 
-나중에 실제 구매 도메인을 연결하면 `BASE_PATH=/`로 바꾸고 `public/CNAME`을 추가합니다.
+`public/CNAME`에는 아래 도메인을 한 줄로 저장합니다.
+
+```txt
+car5489.co.kr
+```
 
 ## GitHub Secrets
 
@@ -76,7 +80,7 @@ GOOGLE_PRIVATE_KEY
 Variables에는 아래 값을 넣습니다.
 
 ```txt
-BASE_PATH=/-kabanhada_page/
+BASE_PATH=/
 ```
 
 ## Google Sheet 탭 SSOT
@@ -142,3 +146,20 @@ npm run git:update -- "copy update" --no-build
 ```
 
 `git:publish`는 `git:update`의 별칭입니다.
+
+## 차량 이미지 폴더 생성
+
+Google Sheet에 차량 행을 추가해도 GitHub 저장소의 이미지 폴더가 자동으로 생기지는 않습니다.
+새 차량을 추가할 때는 같은 차량ID로 이미지 폴더를 먼저 만듭니다.
+
+```powershell
+npm run scaffold:vehicle -- --id avante-cn7-2022 --title "2022 현대 아반떼 CN7"
+```
+
+현재 `public/data/vehicle-catalog.json`에 들어 있는 차량 전체를 기준으로 폴더를 만들려면:
+
+```powershell
+npm run scaffold:vehicles
+```
+
+자세한 기준은 `docs/VEHICLE_FOLDER_SCAFFOLD_GUIDE.md`와 `docs/IMAGE_ASSET_SSOT.md`를 확인합니다.

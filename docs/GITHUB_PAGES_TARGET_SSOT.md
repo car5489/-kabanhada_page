@@ -11,7 +11,7 @@ https://github.com/car5489/-kabanhada_page.git
 커스텀 도메인을 아직 연결하지 않는 경우 기본 접속 주소는 아래 형식입니다.
 
 ```txt
-https://car5489.github.io/-kabanhada_page/
+https://car5489.co.kr/
 ```
 
 ## GitHub Actions Variables
@@ -19,7 +19,7 @@ https://car5489.github.io/-kabanhada_page/
 커스텀 도메인 연결 전에는 아래 값을 사용합니다.
 
 ```txt
-BASE_PATH=/-kabanhada_page/
+BASE_PATH=/
 ```
 
 Vite는 이 값을 기준으로 정적 파일 경로를 생성합니다.
@@ -48,4 +48,4 @@ BASE_PATH=/
 www.example.com
 ```
 
-도메인 주소가 확정되기 전에는 `public/CNAME`을 만들지 않습니다.
+`public/CNAME`은 생성 완료 상태이며, 내용은 `car5489.co.kr`입니다.
