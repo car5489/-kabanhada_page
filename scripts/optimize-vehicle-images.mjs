@@ -14,7 +14,7 @@ const IMAGE_SLOTS = [
   '03',
 ];
 
-const EXTENSIONS = [
+const INPUT_EXTENSIONS = [
   '.jpg',
   '.jpeg',
   '.png',
@@ -30,21 +30,27 @@ async function pathExists(filePath) {
   }
 }
 
-async function listDirectories(rootDir) {
+async function listVehicleDirectories(rootDir) {
   try {
     const entries = await fs.readdir(rootDir, { withFileTypes: true });
 
     return entries
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name)
-      .filter((name) => !name.startsWith('.'));
+      .filter((name) => !name.startsWith('.'))
+      .sort((a, b) =>
+        a.localeCompare(b, undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        })
+      );
   } catch {
     return [];
   }
 }
 
 async function findInputImage(vehicleDir, slotName) {
-  for (const extension of EXTENSIONS) {
+  for (const extension of INPUT_EXTENSIONS) {
     const candidate = path.join(vehicleDir, `${slotName}${extension}`);
 
     if (await pathExists(candidate)) {
@@ -104,7 +110,7 @@ async function optimizeVehicleImages(vehicleId) {
 }
 
 async function main() {
-  const vehicleIds = await listDirectories(VEHICLES_DIR);
+  const vehicleIds = await listVehicleDirectories(VEHICLES_DIR);
 
   let totalOptimized = 0;
   let totalSkipped = 0;
@@ -124,13 +130,11 @@ async function main() {
     totalSkipped += result.skippedCount;
 
     console.log(
-      `[images] ${vehicleId}: optimized ${result.optimizedCount}, skipped ${result.skippedCount}`
+      `[images] ${result.vehicleId}: optimized ${result.optimizedCount}, skipped ${result.skippedCount}`
     );
   }
 
-  console.log(
-    `[images] done: optimized ${totalOptimized}, skipped ${totalSkipped}`
-  );
+  console.log(`[images] done: optimized ${totalOptimized}, skipped ${totalSkipped}`);
 }
 
 main().catch((error) => {
