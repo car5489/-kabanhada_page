@@ -1,87 +1,140 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import sharp from 'sharp'
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import sharp from 'sharp';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const rootDir = path.resolve(__dirname, '..')
-const publicDir = path.join(rootDir, 'public')
-const catalogPath = path.join(publicDir, 'data', 'vehicle-catalog.json')
+const VEHICLES_DIR = path.resolve('public', 'vehicles');
 
-const convertibleExtensions = new Set(['.jpg', '.jpeg', '.png', '.svg', '.avif', '.tif', '.tiff'])
-const pathLikeUrlPattern = /^[a-z]+:\/\//i
+const TARGET_WIDTH = 1600;
+const TARGET_HEIGHT = 1067;
 
-const toPosixPath = (value) => value.split(path.sep).join('/')
+const IMAGE_SLOTS = [
+  'main',
+  '01',
+  '02',
+  '03',
+];
 
-const fileExists = async (filePath) => {
+const EXTENSIONS = [
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.webp',
+];
+
+async function pathExists(filePath) {
   try {
-    await fs.access(filePath)
-    return true
+    await fs.access(filePath);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
-const isLocalAsset = (src) => {
-  return Boolean(src) && !src.startsWith('data:') && !pathLikeUrlPattern.test(src)
-}
+async function listDirectories(rootDir) {
+  try {
+    const entries = await fs.readdir(rootDir, { withFileTypes: true });
 
-const webpPathFor = (src) => {
-  const parsed = path.posix.parse(src.replace(/^\/+/, ''))
-  return path.posix.join(parsed.dir, `${parsed.name}.webp`)
-}
-
-const optimizeImage = async (src, maxWidth = 1600) => {
-  if (!isLocalAsset(src)) return src
-
-  const normalizedSrc = src.replace(/^\/+/, '')
-  const extension = path.posix.extname(normalizedSrc).toLowerCase()
-  if (extension === '.webp') return normalizedSrc
-  if (!convertibleExtensions.has(extension)) return normalizedSrc
-
-  const sourcePath = path.join(publicDir, ...normalizedSrc.split('/'))
-  if (!(await fileExists(sourcePath))) {
-    console.warn(`[images] skipped missing asset: ${normalizedSrc}`)
-    return normalizedSrc
+    return entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter((name) => !name.startsWith('.'));
+  } catch {
+    return [];
   }
-
-  const optimizedSrc = webpPathFor(normalizedSrc)
-  const outputPath = path.join(publicDir, ...optimizedSrc.split('/'))
-
-  await fs.mkdir(path.dirname(outputPath), { recursive: true })
-  await sharp(sourcePath)
-    .rotate()
-    .resize({ width: maxWidth, withoutEnlargement: true })
-    .webp({ quality: 82, effort: 4 })
-    .toFile(outputPath)
-
-  return toPosixPath(path.relative(publicDir, outputPath))
 }
 
-const main = async () => {
-  const rawCatalog = await fs.readFile(catalogPath, 'utf8')
-  const catalog = JSON.parse(rawCatalog)
-  let convertedCount = 0
+async function findInputImage(vehicleDir, slotName) {
+  for (const extension of EXTENSIONS) {
+    const candidate = path.join(vehicleDir, `${slotName}${extension}`);
 
-  for (const vehicle of catalog.vehicles ?? []) {
-    const originalThumbnail = vehicle.thumbnail
-    vehicle.thumbnail = await optimizeImage(vehicle.thumbnail, 900)
-    if (vehicle.thumbnail !== originalThumbnail) convertedCount += 1
-
-    for (const image of vehicle.images ?? []) {
-      const originalSrc = image.src
-      image.src = await optimizeImage(image.src, image.kind === 'thumbnail' ? 900 : 1600)
-      if (image.src !== originalSrc) convertedCount += 1
+    if (await pathExists(candidate)) {
+      return candidate;
     }
   }
 
-  await fs.writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`)
-  console.log(`[images] optimized ${convertedCount} vehicle image reference(s) to WebP`)
+  return '';
+}
+
+async function optimizeImage(inputPath, outputPath) {
+  const tempPath = `${outputPath}.tmp`;
+
+  await sharp(inputPath)
+    .rotate()
+    .resize(TARGET_WIDTH, TARGET_HEIGHT, {
+      fit: 'cover',
+      position: 'center',
+      withoutEnlargement: false,
+    })
+    .jpeg({
+      quality: 86,
+      mozjpeg: true,
+      progressive: true,
+    })
+    .toFile(tempPath);
+
+  await fs.rename(tempPath, outputPath);
+}
+
+async function optimizeVehicleImages(vehicleId) {
+  const vehicleDir = path.join(VEHICLES_DIR, vehicleId);
+
+  let optimizedCount = 0;
+  let skippedCount = 0;
+
+  for (const slotName of IMAGE_SLOTS) {
+    const inputPath = await findInputImage(vehicleDir, slotName);
+
+    if (!inputPath) {
+      skippedCount += 1;
+      continue;
+    }
+
+    const outputPath = path.join(vehicleDir, `${slotName}.jpg`);
+
+    await optimizeImage(inputPath, outputPath);
+
+    optimizedCount += 1;
+  }
+
+  return {
+    vehicleId,
+    optimizedCount,
+    skippedCount,
+  };
+}
+
+async function main() {
+  const vehicleIds = await listDirectories(VEHICLES_DIR);
+
+  let totalOptimized = 0;
+  let totalSkipped = 0;
+
+  console.log(`[images] target size: ${TARGET_WIDTH}x${TARGET_HEIGHT}`);
+  console.log(`[images] vehicles dir: ${VEHICLES_DIR}`);
+
+  if (vehicleIds.length === 0) {
+    console.log('[images] no vehicle folders found');
+    return;
+  }
+
+  for (const vehicleId of vehicleIds) {
+    const result = await optimizeVehicleImages(vehicleId);
+
+    totalOptimized += result.optimizedCount;
+    totalSkipped += result.skippedCount;
+
+    console.log(
+      `[images] ${vehicleId}: optimized ${result.optimizedCount}, skipped ${result.skippedCount}`
+    );
+  }
+
+  console.log(
+    `[images] done: optimized ${totalOptimized}, skipped ${totalSkipped}`
+  );
 }
 
 main().catch((error) => {
-  console.error('[images] failed to optimize vehicle images')
-  console.error(error)
-  process.exit(1)
-})
+  console.error('[images] optimize failed');
+  console.error(error);
+  process.exit(1);
+});
