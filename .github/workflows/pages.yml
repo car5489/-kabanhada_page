@@ -71,7 +71,19 @@ jobs:
           echo "Google Sheet secrets exist"
 
       - name: Build with Google Sheet
-        run: npm run build:sheet
+        run: |
+          npm run build:sheet || (
+            echo ""
+            echo "---- vehicle-catalog.errors.json ----"
+            if [ -f public/data/vehicle-catalog.errors.json ]; then
+              cat public/data/vehicle-catalog.errors.json
+            else
+              echo "vehicle-catalog.errors.json not found"
+            fi
+            echo ""
+            echo "---- build failed ----"
+            exit 1
+          )
         env:
           REQUIRE_GOOGLE_SHEET: '1'
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
