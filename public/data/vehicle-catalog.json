@@ -49,8 +49,8 @@
       },
       "contact": {
         "label": "상담 전화",
-        "phoneDisplay": "010-0000-0000",
-        "phoneRaw": "01000000000"
+        "phoneDisplay": "010-8008-5489",
+        "phoneRaw": "01080085489"
       }
     },
     {
@@ -100,8 +100,8 @@
       },
       "contact": {
         "label": "상담 전화",
-        "phoneDisplay": "010-0000-0000",
-        "phoneRaw": "01000000000"
+        "phoneDisplay": "010-8008-5489",
+        "phoneRaw": "01080085489"
       }
     },
     {
@@ -151,8 +151,8 @@
       },
       "contact": {
         "label": "상담 전화",
-        "phoneDisplay": "010-0000-0000",
-        "phoneRaw": "01000000000"
+        "phoneDisplay": "010-8008-5489",
+        "phoneRaw": "01080085489"
       }
     }
   ]
